@@ -15,6 +15,7 @@ const propTypes = {
   ]),
   originalHeight: PropTypes.number,
   originalWidth: PropTypes.number,
+  renderImageElement: PropTypes.func,
 };
 
 const styles = StyleSheet.create({
@@ -164,20 +165,26 @@ class FitImage extends Image {
   }
 
   render() {
+    const { renderImageElement } = this.props;
+    const propsToPass = {
+      ...this.props,
+      onLayout: this.resize,
+      onLoad: this.onLoad,
+      onLoadStart: this.onLoadStart,
+      source: this.props.source,
+      style: [
+        this.style,
+        this.getStyle(),
+        { height: this.state.height },
+        styles.container,
+      ]
+    };
+    if (renderImageElement) {
+      return renderImageElement(propsToPass, this.renderChildren);
+    }
+
     return (
-      <Image
-        {...this.props}
-        onLayout={this.resize}
-        onLoad={this.onLoad}
-        onLoadStart={this.onLoadStart}
-        source={this.props.source}
-        style={[
-          this.style,
-          this.getStyle(),
-          { height: this.state.height },
-          styles.container,
-        ]}
-      >
+      <Image {...propsToPass}>
         {this.renderChildren()}
       </Image>
     );
