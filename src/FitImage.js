@@ -102,6 +102,13 @@ class FitImage extends Image {
       this.setState({ isLoading: true });
       this.isFirstLoad = false;
     }
+
+    if (typeof this.props.onLoadStart === 'function') {
+      this.props.onLoadStart({
+        width: this.state.layoutWidth,
+        height: this.state.height
+      });
+    }
   }
 
   getHeight(layoutWidth) {
